@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RewardSpawnerControler : MonoBehaviour
+public class CoinSpawnersGroup : MonoBehaviour
 {
     [SerializeField] private float _reapetRate = 2f;
-    private List<RewardSpawner> _spawners;
+    private List<CoinSpawner> _spawners;
 
     private void Awake()
     {
-        _spawners = new List<RewardSpawner>();
+        _spawners = new List<CoinSpawner>();
 
         foreach (Transform child in transform)
-            _spawners.Add(child.GetComponent<RewardSpawner>());
+            _spawners.Add(child.GetComponent<CoinSpawner>());
     }
 
     private void Start()
@@ -27,7 +27,7 @@ public class RewardSpawnerControler : MonoBehaviour
         while (enabled)
         {
             int indexSpawner = Random.Range(0, _spawners.Count);
-            _spawners[indexSpawner].CreateReward();
+            _spawners[indexSpawner].CreateCoin();
             yield return wait;
         }
     }

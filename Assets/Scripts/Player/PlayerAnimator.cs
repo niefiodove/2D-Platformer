@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class PlayerAnimator : MonoBehaviour
 {
-    private Animator _animator;
-
     private static readonly int Run = Animator.StringToHash(PlayerInputConstants.AnimatorRun);
     private static readonly int Jump = Animator.StringToHash(PlayerInputConstants.AnimatorJump);
+
+    private Animator _animator;
 
     private void Start()
     {
