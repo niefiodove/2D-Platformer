@@ -1,12 +1,16 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(PlayerInput))]
+[RequireComponent(typeof(PlayerAnimator))]
+[RequireComponent(typeof(CharacterRotater))]
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpForce = 10f;
 
     private PlayerAnimator _playerAnimator;
-    private PlayerRotater _playerRotater;
+    private CharacterRotater _playerRotater;
     private PlayerInput _input;
     private Rigidbody2D _rigidbody;
     private bool _isRuning = false;
@@ -16,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _input = GetComponent<PlayerInput>();
         _playerAnimator = GetComponent<PlayerAnimator>();
-        _playerRotater = GetComponent<PlayerRotater>();
+        _playerRotater = GetComponent<CharacterRotater>();
     }
 
     private void Update()

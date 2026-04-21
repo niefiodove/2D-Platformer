@@ -1,21 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Mover))]
+[RequireComponent(typeof(CharacterRotater))]
 public class Patroller : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private List<Transform> _patrolPoints;
+    [SerializeField] private EnemyWaypoints _enemyWaypoints;
 
-    private Rigidbody2D _rigidbody;
+    private Mover _mover;
+    private CharacterRotater _playerRotater;
     private int _currentPointIndex = 0;
-    private int _rotationIndex = 0;
-    private int _rightIndex = 0;
-    private int _leftIndex = 180;
+    private float _minimumTurningDistance = 0.05f;
+    private float _currentDirection = 0;
+    private float _rightDirection = 1;
+    private float _leftDirection = -1;
 
+    private void Awake()
+    {
+        _mover = GetComponent<Mover>();
+        _playerRotater = GetComponent<CharacterRotater>();
+    }
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
-
         if (_patrolPoints != null && _patrolPoints.Count > 0)
         {
             transform.position = _patrolPoints[0].position;
@@ -23,12 +30,7 @@ public class Patroller : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        Move();
-    }
-
-    private void Move()
+    public void Patrol()
     {
         if (_patrolPoints == null || _patrolPoints.Count < 2)
             return;
@@ -36,10 +38,9 @@ public class Patroller : MonoBehaviour
         Transform targetPoint = _patrolPoints[_currentPointIndex];
 
         float directionX = Mathf.Sign(targetPoint.position.x - transform.position.x);
+        _mover.Move(directionX, targetPoint);
 
-        _rigidbody.linearVelocity = new Vector2(directionX * _moveSpeed, _rigidbody.linearVelocity.y);
-
-        if (Mathf.Abs(targetPoint.position.x - transform.position.x) < 0.05f)
+        if (Mathf.Abs(targetPoint.position.x - transform.position.x) < _minimumTurningDistance)
         {
             MoveToNextPoint();
         }
@@ -47,23 +48,32 @@ public class Patroller : MonoBehaviour
         if (directionX != 0)
         {
             if (directionX > 0)
-                _rotationIndex = _rightIndex;
+                _currentDirection = _rightDirection;
             else
-                _rotationIndex = _leftIndex;
+                _currentDirection = _leftDirection;
 
-            FlipSprite(_rotationIndex);
+            _playerRotater.FlipSprite(_currentDirection);
         }
     }
 
     private void MoveToNextPoint()
     {
-        _currentPointIndex++;
-        if (_currentPointIndex >= _patrolPoints.Count)
-            _currentPointIndex = 0;
+        _currentPointIndex = ++_currentPointIndex % _patrolPoints.Count;
     }
 
-    private void FlipSprite(int rotationIndex)
+#if UNITY_EDITOR
+    [ContextMenu("Refresh Child Array")]
+    private void RefreshChildArray()
     {
-        transform.rotation = Quaternion.Euler(0, _rotationIndex, 0);
+        _enemyWaypoints.RefreshWaypoints();
+
+        if (_enemyWaypoints.Waypoints.Count > 0)
+        {
+            for (int i = 0; i < _patrolPoints.Count; i++)
+            {
+                _patrolPoints[i] = _enemyWaypoints.Waypoints[Random.Range(0, _enemyWaypoints.Waypoints.Count)];
+            }
+        }
     }
+#endif
 }

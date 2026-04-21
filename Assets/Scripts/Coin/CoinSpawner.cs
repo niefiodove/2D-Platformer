@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
 public class CoinSpawner : MonoBehaviour
 {
     [SerializeField] private Coin _prefab;
@@ -10,6 +11,15 @@ public class CoinSpawner : MonoBehaviour
         _collider = GetComponent<BoxCollider2D>();
     }
 
+    private void OnEnable()
+    {
+        Player.CoinPickedUp += DestroyCoin;
+    }
+
+    private void OnDisable()
+    {
+        Player.CoinPickedUp -= DestroyCoin;
+    }
     public void CreateCoin()
     {
         if (IsCoinMissing())
@@ -38,5 +48,10 @@ public class CoinSpawner : MonoBehaviour
         }
 
         return isCoinMissing;
+    }
+
+    private void DestroyCoin(Coin coin)
+    {
+        Destroy(coin.gameObject);
     }
 }
