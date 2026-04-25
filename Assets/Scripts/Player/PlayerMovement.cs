@@ -2,25 +2,25 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(PlayerInput))]
-[RequireComponent(typeof(PlayerAnimator))]
+[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterRotater))]
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpForce = 10f;
 
-    private PlayerAnimator _playerAnimator;
-    private CharacterRotater _playerRotater;
+    private Animator _animator;
+    private CharacterRotater _characterRotater;
     private PlayerInput _input;
     private Rigidbody2D _rigidbody;
     private bool _isRuning = false;
 
-    private void Start()
+    private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _input = GetComponent<PlayerInput>();
-        _playerAnimator = GetComponent<PlayerAnimator>();
-        _playerRotater = GetComponent<CharacterRotater>();
+        _animator = GetComponent<Animator>();
+        _characterRotater = GetComponent<CharacterRotater>();
     }
 
     private void Update()
@@ -28,15 +28,15 @@ public class PlayerMovement : MonoBehaviour
         if (_input.IsJumping)
         {
             _rigidbody.linearVelocity = new Vector2(_rigidbody.linearVelocity.x, _jumpForce);
-            _playerAnimator.TriggerJump();
+            _animator.TriggerJump();
         }
 
         if (_input.HorizontalInput != 0)
         {
-            _playerRotater.FlipSprite(_input.HorizontalInput);
+            _characterRotater.FlipSprite(_input.HorizontalInput);
             _isRuning = true;
         }
-        _playerAnimator.TriggerRun(_isRuning);
+        _animator.TriggerRun(_isRuning);
         _isRuning = false;
     }
 

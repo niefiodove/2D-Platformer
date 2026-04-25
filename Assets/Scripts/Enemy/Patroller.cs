@@ -12,9 +12,6 @@ public class Patroller : MonoBehaviour
     private CharacterRotater _playerRotater;
     private int _currentPointIndex = 0;
     private float _minimumTurningDistance = 0.05f;
-    private float _currentDirection = 0;
-    private float _rightDirection = 1;
-    private float _leftDirection = -1;
 
     private void Awake()
     {
@@ -44,16 +41,7 @@ public class Patroller : MonoBehaviour
         {
             MoveToNextPoint();
         }
-
-        if (directionX != 0)
-        {
-            if (directionX > 0)
-                _currentDirection = _rightDirection;
-            else
-                _currentDirection = _leftDirection;
-
-            _playerRotater.FlipSprite(_currentDirection);
-        }
+            _playerRotater.FlipSprite(directionX);
     }
 
     private void MoveToNextPoint()

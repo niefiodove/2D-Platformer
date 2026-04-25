@@ -7,6 +7,8 @@ public class CharacterRotater : MonoBehaviour
     private int _rightAngle = 0;
     private int _leftAngle = 180;
 
+    public bool IsFacingRight => _isFacingRight;
+
     public void FlipSprite(float horizontalInput)
     {
         if ((horizontalInput > 0 && !_isFacingRight) || (horizontalInput < 0 && _isFacingRight))

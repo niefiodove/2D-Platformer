@@ -3,12 +3,24 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private float _coinPickupRange = 0.2f;
+
     public static event Action<Coin> CoinPickedUp;
-    private void OnTriggerEnter2D(Collider2D other)
+
+    private void OnEnable()
     {
-        if (other.TryGetComponent(out Coin reward))
-        {
-            CoinPickedUp?.Invoke(reward);
-        }
+        Observer.CoinSpotted += TryPickupCoin;
     }
+
+    private void OnDisable()
+    {
+        Observer.CoinSpotted -= TryPickupCoin;
+    }
+
+    private void TryPickupCoin(Coin coin)
+    {
+        if(Vector2.Distance(transform.position, coin.transform.position) <= _coinPickupRange)
+            CoinPickedUp?.Invoke(coin);
+    }
+
 }
