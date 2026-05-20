@@ -1,69 +1,60 @@
 using UnityEngine;
+using System.Collections;
 
-[RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Animator))]
 public class Attacker : MonoBehaviour
 {
-    [SerializeField] private float _attackRange = 0.3f;
-    [SerializeField] private float _attackDamage = 3f;
+    [SerializeField] protected float _attackRange = 1f;
+    [SerializeField] protected float _attackDamage = 1f;
+    [SerializeField] protected float _attackSpeed = 1f;
 
-    private PlayerInput _input;
-    private Animator _animator;
-    private HealthBar _healthBar;
-    private bool _canAttack = false;
+    protected Coroutine _coroutine;
+    protected Animator _animator;
+    protected HealthBar _healthBar;
 
-    private void Awake()
+    protected virtual void Awake()
     {
-        _input = GetComponent<PlayerInput>();
         _animator = GetComponent<Animator>();
     }
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         Observer.EnemySpotted += TryCauseDamage;
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         Observer.EnemySpotted -= TryCauseDamage;
     }
 
-    private void FixedUpdate()
+    protected virtual void TryCauseDamage(HealthBar healthBar)
     {
-        if (TryGetComponent<Player>(out _))
-        {
-            if (_input.IsAttack)
-            {
-                _animator.TriggerAttack();
 
-                if (_canAttack)
-                {
-                    CauseDamage(_healthBar);
-                }
-            }
-        }
-        else
-        {
-            if (_canAttack)
-            {
-                CauseDamage(_healthBar);
-            }
-        }
-        _canAttack = false;
     }
 
-    private void CauseDamage(HealthBar healthBar)
+    protected virtual IEnumerator AttackCoroutine()
     {
+        yield return null;
+
+        Attack();
+
+        yield return new WaitForSeconds(_attackSpeed);
+
+        _coroutine = null;
+        _healthBar = null;
+    }
+
+    protected virtual void Attack()
+    {
+
+    }
+
+
+    protected void CauseDamage(HealthBar healthBar)
+    {
+        if (healthBar == null)
+            return;
+
         healthBar.TakeDamage(_attackDamage);
-        _animator.TriggerAttack();
-    }
-
-    private void TryCauseDamage(HealthBar healthBar)
-    {
-        if (healthBar.gameObject != gameObject && Vector2.Distance(transform.position, healthBar.transform.position) <= _attackRange)
-        {
-            _canAttack = true;
-            _healthBar = healthBar;
-        }
     }
 }

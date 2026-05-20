@@ -27,7 +27,7 @@ public class CoinSpawnersGroup : MonoBehaviour
         while (enabled)
         {
             int indexSpawner = Random.Range(0, _spawners.Count);
-            _spawners[indexSpawner].CreateCoin();
+            _spawners[indexSpawner].CreateItem();
             yield return wait;
         }
     }

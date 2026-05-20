@@ -3,24 +3,34 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _coinPickupRange = 0.2f;
+    [SerializeField] private float _pickupRange = 0.2f;
 
-    public static event Action<Coin> CoinPickedUp;
+    public static event Action<PickupItem> pickedUp;
 
     private void OnEnable()
     {
-        Observer.CoinSpotted += TryPickupCoin;
+        Observer.ItemSpotted += TryPickup;
     }
 
     private void OnDisable()
     {
-        Observer.CoinSpotted -= TryPickupCoin;
+        Observer.ItemSpotted -= TryPickup;
     }
 
-    private void TryPickupCoin(Coin coin)
+    private void TryPickup(PickupItem item)
     {
-        if(Vector2.Distance(transform.position, coin.transform.position) <= _coinPickupRange)
-            CoinPickedUp?.Invoke(coin);
-    }
+        if (item is PickupItem)
+        {
+            if (Vector2.Distance(transform.position, item.transform.position) <= _pickupRange)
+            {
+                if (item is HealthPack healthPack)
+                {
+                    HealthBar healthBar = GetComponent<HealthBar>();
+                    healthBar?.Heal(healthPack.HealthValue);
+                }
 
+                pickedUp?.Invoke(item);
+            }
+        }
+    }
 }

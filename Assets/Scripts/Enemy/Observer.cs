@@ -11,7 +11,7 @@ public class Observer : MonoBehaviour
     private float _triggerSizeY;
 
     public static event Action<Transform> PlayerSpotted;
-    public static event Action<Coin> CoinSpotted;
+    public static event Action<PickupItem> ItemSpotted;
     public static event Action<HealthBar> EnemySpotted;
 
     private void Awake()
@@ -32,8 +32,8 @@ public class Observer : MonoBehaviour
     {
         if (TryGetComponent<Player>(out _))
         {
-            if (collision.gameObject.TryGetComponent(out Coin coin))
-                CoinSpotted?.Invoke(coin);
+            if (collision.gameObject.TryGetComponent(out PickupItem item))
+                ItemSpotted?.Invoke(item);
         }
 
         if (collision.gameObject.TryGetComponent(out HealthBar healthBar))
