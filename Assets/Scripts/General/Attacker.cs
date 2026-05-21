@@ -19,12 +19,12 @@ public class Attacker : MonoBehaviour
 
     protected void OnEnable()
     {
-        Observer.EnemySpotted += TryCauseDamage;
+        EnemyDetector.EnemySpotted += TryCauseDamage;
     }
 
     protected void OnDisable()
     {
-        Observer.EnemySpotted -= TryCauseDamage;
+        EnemyDetector.EnemySpotted -= TryCauseDamage;
     }
 
     protected virtual void TryCauseDamage(HealthBar healthBar)

@@ -17,12 +17,12 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
-        Observer.PlayerSpotted += SeePlayer;
+        PlayerDetector.PlayerSpotted += SeePlayer;
     }
 
     private void OnDisable()
     {
-        Observer.PlayerSpotted -= SeePlayer;
+        PlayerDetector.PlayerSpotted -= SeePlayer;
     }
 
     private void FixedUpdate()
@@ -37,6 +37,5 @@ public class Enemy : MonoBehaviour
     {
         _player = transform;
         _canSeePlayer = true;
-        gameObject.TryGetComponent(out Observer observer);
     }
 }

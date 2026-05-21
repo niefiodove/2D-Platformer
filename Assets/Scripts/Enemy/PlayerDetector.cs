@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider2D))]
-public class Observer : MonoBehaviour
+public class PlayerDetector : MonoBehaviour
 {
     [SerializeField] private float _aggroRange = 10f;
 
@@ -11,8 +11,6 @@ public class Observer : MonoBehaviour
     private float _triggerSizeY;
 
     public static event Action<Transform> PlayerSpotted;
-    public static event Action<PickupItem> ItemSpotted;
-    public static event Action<HealthBar> EnemySpotted;
 
     private void Awake()
     {
@@ -24,22 +22,8 @@ public class Observer : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent<Player>(out _) && TryGetComponent<Player>(out _) == false)
+        if (collision.gameObject.TryGetComponent<Player>(out _))
             PlayerSpotted?.Invoke(collision.gameObject.transform);
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (TryGetComponent<Player>(out _))
-        {
-            if (collision.gameObject.TryGetComponent(out PickupItem item))
-                ItemSpotted?.Invoke(item);
-        }
-
-        if (collision.gameObject.TryGetComponent(out HealthBar healthBar))
-        {
-            EnemySpotted?.Invoke(healthBar);
-        }
     }
 
     private void AddTrigerZone()
